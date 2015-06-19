@@ -4,10 +4,21 @@
     
 */
 
-blackberry.invoke.invoke({
-  target: "sys.bbm",
-  action: "bb.action.OPEN",
-}, function (error){
-    console.log(error);
+var request = {
+    target: "sys.bbmk",
+    action: "bb.action.OPEN",
+};  
+
+blackberry.invoke.invoke(
+    request,
+    
+    // success
+    function() {
+        console.log('success');
+
+    // fail
+    }, function(e) {
+       console.log('error');
+       console.log(e);
     }
-});
+);
