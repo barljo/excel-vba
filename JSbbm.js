@@ -5,7 +5,7 @@
 */
 
 var request = {
-    target: "sys.bbmk",
+    target: "sys.bbm",
     action: "bb.action.OPEN",
 };  
 
