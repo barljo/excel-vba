@@ -4,13 +4,13 @@
     
 */
 
-var request = {
+var bbmreq = {
     target: "sys.bbm",
     action: "bb.action.OPEN",
 };  
 
 blackberry.invoke.invoke(
-    request,
+    bbmreq,
     
     // success
     function() {
