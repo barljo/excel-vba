@@ -1,0 +1,163 @@
+Sub UpdateFormulas()
+    
+'temporary macro to update changes
+    
+    Sheet5.Activate
+    Range("c8").Select
+    Selection.Formula = "=IF(ISBLANK(A17)=FALSE,"""",IF('Asset All Calc'!D43="""","""",'Asset All Calc'!D43))"
+    
+        Sheet5.Activate
+        Range("a17").Select
+        Selection.Font.Name = "Ariel"
+        Selection.Font.Size = "11"
+        Selection.Font.Bold = True
+        Selection.Font.Underline = True
+    
+    Sheets("Asset All Calc").Activate
+    Range("b41").Select
+    Selection.Formula = "=IF(ISBLANK(C24)=TRUE,"""",IF(ISBLANK(C7)=TRUE,""**Note:-  RLAM £ Extra Yield within CIA **"",""** MANUAL CALC REQUIRED - CIA AND DIRECT HOLDINGS OF RLAM £ Extra Yield""))"
+    
+    Run "homecell"
+    
+   
+End Sub
+
+Sub CheckPrint()
+
+'Prints sheets for checking
+    
+    Sheet3.Activate
+    ActiveWindow.SelectedSheets.PrintOut Copies:=1
+    Sheet5.Activate
+    ActiveWindow.SelectedSheets.PrintOut Copies:=1
+
+End Sub
+    
+Sub HomeCell()
+
+'Returns to Asset All Calc Sheet
+    
+    Sheets("Asset All Calc").Activate
+    Range("c6").Select
+    
+End Sub
+Sub ClearDeals()
+
+'Clears existing Recommended Deals
+      
+    Sheet5.Activate
+    Range("a17").Select
+    Selection.ClearContents
+    Range("A9:A16").Select
+    Selection.ClearContents
+    Range("A20:A37").Select
+    Selection.ClearContents
+    Range("dirdealpaste").Select
+
+End Sub
+
+
+Sub Clear()
+
+'Clears holding values from all cells
+    
+    Sheets("Asset All Calc").Activate
+    Range("c6:c38").Select
+    Selection.ClearContents
+
+'Clears existing Recommended Deals
+      
+Run "ClearDeals"
+
+'Returns to Asset All Calc Sheet
+    
+Run "HomeCell"
+
+End Sub
+
+Sub Deals()
+
+'Clears existing Recommended Deals just in case
+    
+Run "ClearDeals"
+
+'checks for direct *and* cia holdings of RLAM £ Extra Yield
+
+Dim DupCheck As String
+
+DupCheck = Worksheets("Asset All Calc").Range("b41").Value
+
+    If DupCheck = "** MANUAL CALC REQUIRED - CIA AND DIRECT HOLDINGS OF RLAM £ Extra Yield" Then
+
+        Sheet5.Activate
+        Range("a17").Select
+        Selection.Value = DupCheck
+       
+Else
+
+'Copies deals into Recommended Deals sheet
+
+    Sheets("Asset All Calc").Activate
+    Range("A6:A13").Copy
+    Sheets("Recommended Deals").Activate
+    Range("dirdealpaste").Activate
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+            :=False, Transpose:=False
+
+'Sorts by Deal Type to neaten printout
+    
+    Range("A9:D16").Select
+    Range("C9").Activate
+    Application.CutCopyMode = False
+    Selection.Sort Key1:=Range("C8"), Order1:=xlDescending, Header:=xlGuess, _
+        OrderCustom:=1, MatchCase:=False, Orientation:=xlTopToBottom, _
+        DataOption1:=xlSortNormal
+        
+'Copies CIA Rebalance Percentages
+    
+    Sheets("Asset All Calc").Select
+    Range("A21:a38").Select
+    Selection.Copy
+    Sheets("Recommended deals").Select
+    Range("ciadealpaste").Select
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _
+        :=True, Transpose:=False
+   
+'Sorts by percentage to neaten printout
+    
+    'first sorts blanks to bottom
+ 
+    Range("a19:a37").Select
+        Range(Selection, Selection.End(xlToRight)).Select
+        Selection.Sort Key1:=Range("c19"), Order1:=xlAscending, Header:=xlYes, _
+        MatchCase:=False, Orientation:=xlTopToBottom, _
+        DataOption1:=xlSortTextAsNumbers
+
+    'then sorts by percentage, descending
+    
+        Range("A19").Select
+        Range(Selection, Selection.End(xlDown)).Select
+        Range(Selection, Selection.End(xlToRight)).Select
+        Selection.Sort Key1:=Range("C19"), Order1:=xlDescending, Header:=xlYes, _
+        MatchCase:=False, Orientation:=xlTopToBottom, _
+        DataOption1:=xlSortTextAsNumbers
+
+End If
+    
+'Prints sheets for checking
+
+Run "CheckPrint"
+
+'Returns to Asset All Calc Sheet
+
+Run "HomeCell"
+
+End Sub
+
+
+
+
+
+
+
+
